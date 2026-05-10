@@ -48,6 +48,8 @@ return function(P, _O)
 
     ["@method"] = { fg = P.method },
     ["@method.call"] = { fg = P.method },
+    ["@function.method"] = { fg = P.method },
+    ["@function.method.call"] = { fg = P.method },
 
     ["@namespace"] = { fg = P.type },
 
@@ -212,6 +214,7 @@ return function(P, _O)
     ["@lsp.type.enumMember"] = { link = "@constant" },
     ["@lsp.type.function"] = { link = "@function" },
     ["@lsp.type.method"] = { link = "@method" },
+    ["@lsp.type.member"] = { link = "@function.method.call" },
     ["@lsp.type.keyword"] = { link = "@keyword" },
     ["@lsp.type.operator"] = { link = "@operator" },
     ["@lsp.type.macro"] = { link = "@function.macro" },
@@ -225,12 +228,21 @@ return function(P, _O)
     ["@lsp.mod.abstract"] = { italic = true },
     ["@lsp.mod.async"] = { italic = true },
     ["@lsp.mod.declaration"] = { bold = true },
+    ["@lsp.mod.local"] = {},
     ["@lsp.mod.defaultLibrary"] = { fg = P.builtin },
     ["@lsp.mod.definition"] = { bold = true },
     ["@lsp.mod.deprecated"] = { fg = P.subtle, strikethrough = true },
     ["@lsp.mod.documentation"] = { fg = P.comment },
     ["@lsp.mod.modification"] = { underline = true },
-    ["@lsp.mod.readonly"] = { fg = P.const },
+    ["@lsp.mod.readonly"] = { italic = true },
+    ["@lsp.typemod.variable.readonly"] = { fg = P.const },
+    ["@lsp.typemod.variable.local"] = {},
+    ["@lsp.typemod.function.readonly"] = { link = "@function" },
+    ["@lsp.typemod.method.readonly"] = { link = "@method" },
+
+    ["@lsp.typemod.member.defaultLibrary"] = { link = "@function.method.call" },
+    ["@lsp.typemod.method.defaultLibrary"] = { link = "@method" },
+    ["@lsp.typemod.function.defaultLibrary"] = { link = "@function" },
 
   }
 
