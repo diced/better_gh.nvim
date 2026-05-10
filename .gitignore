@@ -1,0 +1,4 @@
+_primer_extract/
+_gh_theme/
+.nvim_test_state/
+.nvimlog
