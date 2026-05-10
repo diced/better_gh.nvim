@@ -48,11 +48,15 @@ local M = {}
 
 ---@class BetterGhOpts
 ---@field transparent_background boolean?
+---@field bold boolean? When false, strip bold from highlights (default true).
+---@field italic boolean? When true, keep italic where the theme sets it (default false).
 ---@field colors BetterGhColorOpts?
 ---@field integrations BetterGhIntegrationOpts?
 
 local defaults = {
   transparent_background = false,
+  bold = true,
+  italic = false,
   colors = {},
   integrations = {
     treesitter = true,
@@ -228,8 +232,11 @@ function M.load()
 
   local O = M.options
   local P = require("better_gh.palette").build(O.colors)
+  local U = require("better_gh.util")
 
-  for name, opts in pairs(merge_groups(P, O)) do
+  local groups = merge_groups(P, O)
+  U.apply_style_toggles(groups, O)
+  for name, opts in pairs(groups) do
     vim.api.nvim_set_hl(0, name, opts)
   end
 
