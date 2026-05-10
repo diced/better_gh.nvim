@@ -82,7 +82,7 @@ return function(P, O)
     Conditional = { fg = P.keyword },
     Repeat = { fg = P.keyword },
     Label = { fg = P.keyword },
-    Operator = { fg = P.fg },
+    Operator = { fg = P.keyword },
     Keyword = { fg = P.keyword },
     Exception = { fg = P.keyword },
     PreProc = { fg = P.keyword },

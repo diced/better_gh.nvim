@@ -58,7 +58,7 @@ Thanks to cursor and an hour of prompting, a fully working theme that looks good
 
 ## Screenshots
 
-![ss][.github/ss.png]
+![ss](.github/ss.png)
 
 ---
 

@@ -55,7 +55,7 @@ return function(P, _O)
     ["@number"] = { fg = P.number },
     ["@number.float"] = { fg = P.number },
 
-    ["@operator"] = { fg = P.fg },
+    ["@operator"] = { fg = P.keyword },
 
     ["@parameter"] = { fg = P.param },
     ["@parameter.reference"] = { fg = P.param },
