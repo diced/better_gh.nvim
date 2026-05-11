@@ -26,7 +26,7 @@ return function(P, _O)
     ["@error"] = { fg = P.err },
 
     ["@function"] = { fg = P.func },
-    ["@function.builtin"] = { fg = P.builtin },
+    ["@function.builtin"] = { fg = P.func },
     ["@function.call"] = { fg = P.func },
     ["@function.macro"] = { fg = P.keyword },
 
@@ -44,7 +44,7 @@ return function(P, _O)
     ["@keyword.directive"] = { fg = P.keyword },
     ["@keyword.directive.define"] = { fg = P.keyword },
 
-    ["@label"] = { fg = P.accent },
+    ["@label"] = { fg = P.ident },
 
     ["@method"] = { fg = P.method },
     ["@method.call"] = { fg = P.method },
@@ -109,7 +109,7 @@ return function(P, _O)
 
     -- Dominant vscode scope for locals is variable.other → fg.default.
     ["@variable"] = { fg = P.fg },
-    ["@variable.builtin"] = { fg = P.builtin },
+    ["@variable.builtin"] = { fg = P.tag },
     -- meta.object.member → fg.default (member access, optional chaining, etc.).
     ["@variable.member"] = { fg = P.fg },
     ["@variable.parameter"] = { fg = P.param },
