@@ -273,88 +273,29 @@ return function(P, O)
 		})
 	end
 
-	-- fzf-lua — outer nvim wins + embedded fzf `--color` (see fzf-lua `defaults.__HLS`, `create_fzf_colors`).
-	-- Dim/info/prompt rows need explicit `bg = float_bg` or ansi dims render wrong on the panel.
-	--
-	-- Treesitter pane: fzf-lua defaults hl/hl+ = "-1:reverse" → fuzzy-match bg inherits TS fg (magenta bands).
-	-- Override with `require("better_gh").fzf_lua_treesitter_fzf_colors()` in fzf-lua `setup`.
+	-- fzf-lua
 	if pick_integration("fzf_lua") then
-		-- One surface for picker + preview; darker than generic floats so the picker reads as a denser overlay.
-		local fzf_panel_bg = (float_bg == P.none) and P.base or U.blend(P.base, float_bg, 0.68)
-		local fzf_preview_line = O.transparent_background and P.none or U.blend("#ffffff", fzf_panel_bg, 0.045)
-		local fzf_list_sel = U.blend(P.accent, fzf_panel_bg, 0.26)
-		local fzf_backdrop_mask = U.blend("#000000", P.base, 0.72)
+		local fzf_backdrop = U.blend("#000000", blend_bg, 0.72)
 		merge({
-			FzfLuaNormal = { fg = P.fg, bg = fzf_panel_bg },
-			FzfLuaBorder = { fg = P.float_border_hi, bg = fzf_panel_bg },
-			FzfLuaTitle = { fg = P.fg, bg = fzf_panel_bg, bold = true },
-			FzfLuaTitleFlags = { fg = P.muted, bg = fzf_panel_bg },
-			-- fg = bg: uniform mask; init.lua extends backdrop `winhl` past Normal-only (fzf-lua default).
-			FzfLuaBackdrop = { fg = fzf_backdrop_mask, bg = fzf_backdrop_mask },
+			FzfLuaNormal = { link = "NormalFloat" },
+			FzfLuaBorder = { link = "FloatBorder" },
+			FzfLuaTitle = { link = "FloatTitle" },
+			FzfLuaBackdrop = { fg = fzf_backdrop, bg = fzf_backdrop },
 
-			FzfLuaPreviewNormal = { fg = P.fg, bg = fzf_panel_bg },
-			FzfLuaPreviewBorder = { fg = P.float_border_hi, bg = fzf_panel_bg },
-			FzfLuaPreviewTitle = { fg = P.fg, bg = fzf_panel_bg, bold = true },
-
-			FzfLuaCursor = { link = "Cursor" },
-			-- Builtin preview: CursorLine blended on same plane as preview bg (not editor `P.line`).
-			FzfLuaCursorLine = { bg = fzf_preview_line },
-			-- Match CursorLine stripe; defaults preview winhl does not remap LineNr (uses core LineNr).
-			FzfLuaCursorLineNr = { fg = P.line_nr, bg = fzf_preview_line },
-			FzfLuaSearch = { link = "IncSearch" },
-
-			FzfLuaScrollBorderEmpty = { fg = P.float_border, bg = fzf_panel_bg },
-			FzfLuaScrollBorderFull = { fg = P.float_border_hi, bg = fzf_panel_bg },
-			FzfLuaScrollFloatEmpty = { fg = P.subtle, bg = fzf_panel_bg },
-			FzfLuaScrollFloatFull = { fg = P.muted, bg = fzf_panel_bg },
-
-			FzfLuaHelpNormal = { fg = P.fg, bg = fzf_panel_bg },
-			FzfLuaHelpBorder = { fg = P.float_border_hi, bg = fzf_panel_bg },
-
-			FzfLuaHeaderBind = { fg = P.warn, bg = fzf_panel_bg },
-			FzfLuaHeaderText = { fg = P.fg, bg = fzf_panel_bg },
-
-			FzfLuaPathColNr = { fg = P.hint, bg = fzf_panel_bg },
-			FzfLuaPathLineNr = { fg = P.line_nr, bg = fzf_panel_bg },
-
-			FzfLuaBufName = { fg = P.accent, bg = fzf_panel_bg },
-			FzfLuaBufId = { fg = P.muted, bg = fzf_panel_bg },
-			FzfLuaBufNr = { fg = P.warn, bg = fzf_panel_bg },
-			FzfLuaBufLineNr = { fg = P.line_nr, bg = fzf_panel_bg },
-			FzfLuaBufFlagCur = { fg = P.warn, bg = fzf_panel_bg },
-			FzfLuaBufFlagAlt = { fg = P.hint, bg = fzf_panel_bg },
-
-			FzfLuaTabTitle = { fg = P.title, bg = fzf_panel_bg },
-			FzfLuaTabMarker = { fg = P.muted, bg = fzf_panel_bg },
-
-			FzfLuaDirIcon = { fg = P.accent, bg = fzf_panel_bg },
-			FzfLuaDirPart = { fg = P.muted, bg = fzf_panel_bg },
-			FzfLuaFilePart = { fg = P.fg, bg = fzf_panel_bg },
-
-			FzfLuaLivePrompt = { fg = P.accent, bg = fzf_panel_bg },
-			FzfLuaLiveSym = { fg = P.func, bg = fzf_panel_bg },
-
-			FzfLuaCmdEx = { fg = P.keyword, bg = fzf_panel_bg },
-			FzfLuaCmdBuf = { fg = P.git_add, bg = fzf_panel_bg },
-			FzfLuaCmdGlobal = { fg = P.accent, bg = fzf_panel_bg },
-
-			-- fzf terminal faces (fg/bg, fg+/bg+, hl, info, prompt, query, …)
-			FzfLuaFzfNormal = { fg = P.fg, bg = fzf_panel_bg },
-			FzfLuaFzfBorder = { fg = P.float_border_hi, bg = fzf_panel_bg },
-			FzfLuaFzfScrollbar = { fg = P.muted, bg = fzf_panel_bg },
-			FzfLuaFzfSeparator = { fg = P.subtle, bg = fzf_panel_bg },
-			FzfLuaFzfGutter = { fg = P.none, bg = fzf_panel_bg },
-			FzfLuaFzfHeader = { fg = P.title, bg = fzf_panel_bg, bold = true },
-			FzfLuaFzfInfo = { fg = P.subtle, bg = fzf_panel_bg },
-			FzfLuaFzfPointer = { fg = P.accent, bg = fzf_panel_bg },
-			FzfLuaFzfMarker = { fg = P.accent, bg = fzf_panel_bg },
-			FzfLuaFzfSpinner = { fg = P.accent, bg = fzf_panel_bg },
-			FzfLuaFzfPrompt = { fg = P.accent, bg = fzf_panel_bg },
-			FzfLuaFzfQuery = { fg = P.fg, bg = fzf_panel_bg },
-			-- bg+ for selected row; keep chroma aligned with PmenuSel but slightly stronger on float_bg.
-			FzfLuaFzfCursorLine = { fg = P.fg, bg = fzf_list_sel, bold = false },
-			-- No bg: fzf composites hl/hl+ on top of normal / cursorline rows.
+			FzfLuaHeaderBind = { fg = P.warn },
+			FzfLuaHeaderText = { fg = P.field },
+			FzfLuaDirPart = { link = "NonText" },
 			FzfLuaFzfMatch = { fg = P.accent, bold = true },
+			FzfLuaFzfPrompt = { fg = P.accent },
+			FzfLuaPathColNr = { fg = P.accent },
+			FzfLuaPathLineNr = { fg = P.git_add },
+			FzfLuaBufName = { fg = P.func },
+			FzfLuaBufNr = { fg = P.warn },
+			FzfLuaBufFlagCur = { fg = P.field },
+			FzfLuaBufFlagAlt = { fg = P.accent },
+			FzfLuaTabTitle = { fg = P.hint },
+			FzfLuaTabMarker = { fg = P.warn },
+			FzfLuaLiveSym = { fg = P.field },
 		})
 	end
 

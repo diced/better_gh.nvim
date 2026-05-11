@@ -94,42 +94,6 @@ local defaults = {
 
 M.options = nil
 
---- fzf-lua backdrop sets `winhl = Normal:FzfLuaBackdrop` only (`win/backdrop.lua`), so LineNr,
---- EndOfBuffer, NonText, etc. keep global highlights and look torn under `winblend`.
-local FZF_BACKDROP_WINHL = table.concat({
-  "Normal:FzfLuaBackdrop",
-  "NormalNC:FzfLuaBackdrop",
-  "LineNr:FzfLuaBackdrop",
-  "SignColumn:FzfLuaBackdrop",
-  "FoldColumn:FzfLuaBackdrop",
-  "EndOfBuffer:FzfLuaBackdrop",
-  "NonText:FzfLuaBackdrop",
-  "Whitespace:FzfLuaBackdrop",
-  "WinSeparator:FzfLuaBackdrop",
-  "VertSplit:FzfLuaBackdrop",
-  "CursorLine:FzfLuaBackdrop",
-  "CursorLineNr:FzfLuaBackdrop",
-  "CursorColumn:FzfLuaBackdrop",
-  "WinBar:FzfLuaBackdrop",
-  "WinBarNC:FzfLuaBackdrop",
-  "Folded:FzfLuaBackdrop",
-  "MatchParen:FzfLuaBackdrop",
-}, ",")
-
-local function attach_fzf_backdrop_winhl(buf)
-  vim.schedule(function()
-    if not vim.api.nvim_buf_is_valid(buf) or vim.bo[buf].filetype ~= "fzflua_backdrop" then
-      return
-    end
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-      if vim.api.nvim_win_get_buf(win) == buf then
-        vim.api.nvim_win_set_option(win, "winhighlight", FZF_BACKDROP_WINHL)
-        return
-      end
-    end
-  end)
-end
-
 ---@param opts BetterGhOpts?
 function M.setup(opts)
   opts = opts or {}
@@ -139,17 +103,6 @@ function M.setup(opts)
 
   -- Drop leftover callbacks if Neogit backdrop was enabled in an older config/session.
   vim.api.nvim_create_augroup("BetterGhNeogitBackdrop", { clear = true })
-
-  local aug = vim.api.nvim_create_augroup("BetterGhFzfBackdrop", { clear = true })
-  if M.options.integrations.fzf_lua ~= false then
-    vim.api.nvim_create_autocmd("FileType", {
-      group = aug,
-      pattern = "fzflua_backdrop",
-      callback = function(ev)
-        attach_fzf_backdrop_winhl(ev.buf)
-      end,
-    })
-  end
 end
 
 local function apply_term_palette(P)
