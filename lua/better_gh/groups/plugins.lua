@@ -63,8 +63,11 @@ return function(P, O)
 	-- nvim-tree.lua
 	if pick_integration("nvim_tree") then
 		local side_bg = inactive_sidebar_bg(O, P)
-		local side_cursor = O.transparent_background and P.none or U.blend(P.fg, side_bg, 0.07)
+		local side_sep = side_bg ~= P.none and side_bg or U.blend(P.border, blend_bg, 0.12)
+		local side_cursor = O.transparent_background and P.none or U.blend(P.fg, side_bg, 0.09)
 		local side_cursor_col = O.transparent_background and P.none or U.blend(P.fg, side_bg, 0.05)
+		local indent_base = side_bg ~= P.none and side_bg or blend_bg
+		local indent_soft = U.blend(P.indent_guide, indent_base, 0.42)
 		merge({
 			NvimTreeNormal = { fg = P.fg, bg = side_bg },
 			NvimTreeNormalNC = { fg = P.fg, bg = side_bg },
@@ -72,34 +75,44 @@ return function(P, O)
 			NvimTreePopup = { fg = P.fg, bg = float_bg },
 			NvimTreeEndOfBuffer = { fg = side_bg, bg = side_bg },
 			NvimTreeLineNr = { fg = P.line_nr, bg = side_bg },
-			NvimTreeCursorLineNr = { fg = P.line_nr_cur, bg = side_bg, bold = true },
+			NvimTreeCursorLineNr = { fg = P.line_nr_cur, bg = side_cursor, bold = true },
 			NvimTreeSignColumn = { fg = P.line_nr, bg = side_bg },
 			NvimTreeCursorLine = { bg = side_cursor },
 			NvimTreeCursorColumn = { bg = side_cursor_col },
 			NvimTreeStatusLine = { fg = P.muted, bg = side_bg },
 			NvimTreeStatusLineNC = { fg = P.subtle, bg = side_bg },
+			-- Hide edge between tree and editor (same fg/bg as sidebar).
+			NvimTreeWinSeparator = { fg = side_sep, bg = side_bg },
+			NvimTreeVertSplit = { fg = side_sep, bg = side_bg },
 
-			NvimTreeRootFolder = { fg = P.accent, bg = side_bg, bold = true },
-			NvimTreeSymlink = { fg = P.hint, bg = side_bg },
-			NvimTreeExecFile = { fg = P.git_add, bg = side_bg },
-			NvimTreeOpenedFile = { fg = P.fg, bg = side_bg, bold = true },
-			NvimTreeModifiedFile = { fg = P.warn, bg = side_bg },
-			NvimTreeSpecialFile = { fg = P.warn, bg = side_bg },
-			NvimTreeImageFile = { fg = P.func, bg = side_bg },
-			NvimTreeIndentMarker = { fg = P.indent_guide, bg = side_bg },
-			NvimTreeGitDirty = { fg = P.warn, bg = side_bg },
-			NvimTreeGitStaged = { fg = P.git_add, bg = side_bg },
-			NvimTreeGitMerge = { fg = P.accent, bg = side_bg },
-			NvimTreeGitRenamed = { fg = P.info, bg = side_bg },
-			NvimTreeGitNew = { fg = P.git_add, bg = side_bg },
-			NvimTreeGitDeleted = { fg = P.git_delete, bg = side_bg },
-			NvimTreeFolderIcon = { fg = P.accent, bg = side_bg },
-			NvimTreeOpenedFolderIcon = { fg = P.accent, bg = side_bg },
-			NvimTreeClosedFolderIcon = { fg = P.accent, bg = side_bg },
-			NvimTreeFolderName = { fg = P.accent, bg = side_bg },
-			NvimTreeOpenedFolderName = { fg = P.accent, bg = side_bg },
-			NvimTreeEmptyFolderName = { fg = P.muted, bg = side_bg },
-			NvimTreeWinSeparator = { fg = P.border, bg = side_bg },
+			-- Content groups: fg only (no bg) so `CursorLine` / `NvimTreeCursorLine` spans the full row,
+			-- not only under filenames + icons (buf highlights stop at last character).
+			NvimTreeRootFolder = { fg = P.accent, bold = true },
+			NvimTreeSymlink = { fg = P.hint },
+			NvimTreeSymlinkIcon = { fg = P.hint },
+			NvimTreeExecFile = { fg = P.git_add },
+			NvimTreeOpenedFile = { fg = P.fg, bold = true },
+			NvimTreeOpenedHL = { fg = P.fg, bold = true },
+			NvimTreeModifiedFile = { fg = P.warn },
+			NvimTreeSpecialFile = { fg = P.warn },
+			NvimTreeImageFile = { fg = P.func },
+			NvimTreeFileIcon = { fg = P.subtle },
+			NvimTreeIndentMarker = { fg = indent_soft },
+			NvimTreeFolderArrowClosed = { fg = indent_soft },
+			NvimTreeFolderArrowOpen = { fg = indent_soft },
+			NvimTreeGitDirty = { fg = P.warn },
+			NvimTreeGitStaged = { fg = P.git_add },
+			NvimTreeGitMerge = { fg = P.accent },
+			NvimTreeGitRenamed = { fg = P.info },
+			NvimTreeGitNew = { fg = P.git_add },
+			NvimTreeGitDeleted = { fg = P.git_delete },
+			NvimTreeFolderIcon = { fg = P.accent },
+			NvimTreeOpenedFolderIcon = { fg = P.accent },
+			NvimTreeClosedFolderIcon = { fg = P.accent },
+			NvimTreeFolderName = { fg = P.fg },
+			NvimTreeOpenedFolderName = { fg = P.fg },
+			NvimTreeSymlinkFolderName = { fg = P.hint },
+			NvimTreeEmptyFolderName = { fg = P.muted },
 		})
 	end
 
