@@ -181,9 +181,11 @@ return function(P, O)
     PmenuKind = { fg = P.builtin },
     PmenuExtra = { fg = P.muted },
 
-    -- nvim lsp completion doc popup (often links here)
     markdownCode = { fg = P.string },
     markdownLinkText = { fg = P.link, underline = true },
+
+    jsonKeyword = { fg = P.property },
+    yamlMappingKey = { fg = P.property },
   }
 
   return h

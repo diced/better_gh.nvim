@@ -99,6 +99,7 @@ function M.build(opts)
     number = scale.blue[2],
     bool = scale.blue[2],
     field = scale.orange[2],
+    property = scale.green[1],
     param = fg,
     ident = scale.orange[2],
     type = scale.orange[2],

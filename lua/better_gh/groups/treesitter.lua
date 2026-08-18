@@ -65,6 +65,9 @@ return function(P, _O)
 		["@preproc"] = { fg = P.keyword },
 
 		["@property"] = { fg = P.fg },
+		["@property.json"] = { fg = P.property },
+		["@property.jsonc"] = { fg = P.property },
+		["@property.yaml"] = { fg = P.property },
 		["@punctuation.bracket"] = { fg = P.punct },
 		["@punctuation.delimiter"] = { fg = P.punct },
 		["@punctuation.special"] = { fg = P.keyword },
