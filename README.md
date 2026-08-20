@@ -24,6 +24,7 @@ Thanks to cursor and an hour of prompting, a fully working theme that looks good
 | `nvim_tree` | [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua) |
 | `neo_tree` | [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) |
 | `gitsigns` | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) |
+| `diffview` | [diffview.nvim](https://github.com/sindrets/diffview.nvim) |
 | `telescope` | [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) |
 | `fzf_lua` | [fzf-lua](https://github.com/ibhagwan/fzf-lua) |
 | `which_key` | [which-key.nvim](https://github.com/folke/which-key.nvim) |
@@ -53,6 +54,7 @@ Thanks to cursor and an hour of prompting, a fully working theme that looks good
 
 - **[lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)** — `require('lualine').setup({ options = { theme = 'better_gh' } })`
 - **[fzf-lua](https://github.com/ibhagwan/fzf-lua) + treesitter** in the results pane — merge `require('better_gh').fzf_lua_treesitter_fzf_colors()` into `winopts.treesitter.fzf_colors` if reversed fuzzy-match highlights look harsh.
+- **[diffview.nvim](https://github.com/sindrets/diffview.nvim)** — deleted filler rows use subtle diagonal `╱` marks, and two-way diffs show old/left-only lines in red and new/right-only lines in green. Set `diff_fillchar = false` to keep your existing diff fill character or `diffview_enhanced_diff_hl = false` to preserve Diffview's own side-highlighting setting.
 
 ---
 
@@ -87,6 +89,8 @@ After changing options, run **`colorscheme better_gh`** again (or call **`requir
 
 ```lua
 require("better_gh").setup({
+  -- diff_fillchar = "╱", -- false preserves your existing diff fill character
+  -- diffview_enhanced_diff_hl = true,
   colors = {
     base = "#0d1117",
     mantle = "#010409",

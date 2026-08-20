@@ -7,6 +7,7 @@ local M = {}
 ---@field nvim_tree boolean?
 ---@field neo_tree boolean?
 ---@field gitsigns boolean?
+---@field diffview boolean?
 ---@field telescope boolean?
 ---@field fzf_lua boolean?
 ---@field which_key boolean?
@@ -48,6 +49,8 @@ local M = {}
 
 ---@class BetterGhOpts
 ---@field transparent_background boolean?
+---@field diff_fillchar string|false? Character used for diff filler rows (default `╱`; false keeps the current value).
+---@field diffview_enhanced_diff_hl boolean? Color old/left-only lines as deletions in two-way Diffview layouts (default true).
 ---@field bold boolean? When false, strip bold from highlights (default true).
 ---@field italic boolean? When true, keep italic where the theme sets it (default false).
 ---@field colors BetterGhColorOpts?
@@ -55,6 +58,8 @@ local M = {}
 
 local defaults = {
   transparent_background = false,
+  diff_fillchar = "╱",
+  diffview_enhanced_diff_hl = true,
   bold = true,
   italic = false,
   colors = {},
@@ -65,6 +70,7 @@ local defaults = {
     nvim_tree = true,
     neo_tree = true,
     gitsigns = true,
+    diffview = true,
     telescope = true,
     fzf_lua = true,
     which_key = true,
@@ -123,6 +129,89 @@ local function apply_term_palette(P)
   vim.g.terminal_color_13 = t.bright_magenta
   vim.g.terminal_color_14 = t.bright_cyan
   vim.g.terminal_color_15 = t.bright_white
+end
+
+local function apply_diff_fillchar(O)
+  if O.integrations.diffview and O.diff_fillchar ~= false then
+    vim.opt.fillchars:append({ diff = O.diff_fillchar })
+  end
+end
+
+local function set_winhl_group(winid, group, target)
+  if not (winid and vim.api.nvim_win_is_valid(winid)) then
+    return
+  end
+
+  local mappings = {}
+  local found = false
+  for item in vim.wo[winid].winhl:gmatch("[^,]+") do
+    local source = item:match("^([^:]+):")
+    if source == group then
+      mappings[#mappings + 1] = group .. ":" .. target
+      found = true
+    else
+      mappings[#mappings + 1] = item
+    end
+  end
+  if not found then
+    mappings[#mappings + 1] = group .. ":" .. target
+  end
+  vim.wo[winid].winhl = table.concat(mappings, ",")
+end
+
+local function enhance_current_diffview(O)
+  if not (O.integrations.diffview and O.diffview_enhanced_diff_hl) then
+    return
+  end
+
+  local config = package.loaded["diffview.config"]
+  local lib = package.loaded["diffview.lib"]
+  if not (config and lib) then
+    return
+  end
+
+  local ok_config, diffview_config = pcall(config.get_config)
+  if ok_config and diffview_config then
+    diffview_config.enhanced_diff_hl = true
+  end
+
+  local hl = package.loaded["diffview.hl"]
+  if hl and hl.update_diff_hl then
+    pcall(hl.update_diff_hl)
+  end
+
+  local ok_view, view = pcall(lib.get_current_view)
+  local layout = ok_view and view and view.cur_layout or nil
+  if not (layout and type(layout.name) == "string" and layout.name:match("^diff2")) then
+    return
+  end
+
+  -- In Diffview's two-way layouts A is the old state and B is the new state.
+  set_winhl_group(layout.a and layout.a.id, "DiffAdd", "DiffviewDiffAddAsDelete")
+  set_winhl_group(layout.b and layout.b.id, "DiffAdd", "DiffviewDiffAdd")
+end
+
+local function apply_diffview_integration(O)
+  local group = vim.api.nvim_create_augroup("BetterGhDiffview", { clear = true })
+  if not (O.integrations.diffview and O.diffview_enhanced_diff_hl) then
+    return
+  end
+
+  vim.api.nvim_create_autocmd("User", {
+    group = group,
+    pattern = {
+      "DiffviewViewOpened",
+      "DiffviewViewEnter",
+      "DiffviewViewPostLayout",
+      "DiffviewDiffBufWinEnter",
+    },
+    callback = function()
+      enhance_current_diffview(O)
+    end,
+  })
+
+  -- Also correct a Diffview that was already open when the colorscheme reloaded.
+  enhance_current_diffview(O)
 end
 
 local function merge_groups(P, O)
@@ -193,6 +282,8 @@ function M.load()
     vim.api.nvim_set_hl(0, name, opts)
   end
 
+  apply_diff_fillchar(O)
+  apply_diffview_integration(O)
   apply_term_palette(P)
 end
 

@@ -10,6 +10,7 @@ local INTEGRATIONS = {
 	require("better_gh.groups.integrations.nvim_tree"),
 	require("better_gh.groups.integrations.neo_tree"),
 	require("better_gh.groups.integrations.gitsigns"),
+	require("better_gh.groups.integrations.diffview"),
 	require("better_gh.groups.integrations.neogit"),
 	require("better_gh.groups.integrations.telescope"),
 	require("better_gh.groups.integrations.fzf_lua"),

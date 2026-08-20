@@ -25,7 +25,7 @@ return function(P, O)
     DiffAdd = { bg = P.diff_add },
     DiffChange = { bg = P.diff_chg },
     DiffDelete = { bg = P.diff_del },
-    DiffText = { bg = U.blend(P.accent, P.base, 0.25) },
+    DiffText = { bg = P.diff_text },
     EndOfBuffer = { fg = bg == P.none and P.subtle or U.blend(P.subtle, bg, 0.35), bg = bg },
     ErrorMsg = { fg = P.err, bold = true },
     WinSeparator = { fg = P.border, bg = bg },

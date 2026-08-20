@@ -141,9 +141,10 @@ function M.build(opts)
     ok = scale.green[3],
     ok_bg = U.blend(scale.green[5], base, 0.18),
 
-    diff_add = U.blend(scale.green[3], base, 0.22),
-    diff_del = U.blend(scale.red[3], base, 0.22),
-    diff_chg = U.blend(scale.yellow[3], base, 0.15),
+    diff_add = U.blend(scale.green[3], base, 0.16),
+    diff_del = U.blend(scale.red[3], base, 0.16),
+    diff_chg = U.blend(fg, base, 0.025),
+    diff_text = U.blend(fg, base, 0.10),
 
     git_add = scale.green[3],
     git_change = scale.yellow[3],
